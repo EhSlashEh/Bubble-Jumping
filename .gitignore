@@ -5,7 +5,7 @@
 
 # I added these ignores
 /Library/
-/Assets/
+/Assets/PolyGun/
 
 # User-specific files
 *.rsuser
