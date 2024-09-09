@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +8,10 @@ public class PlayerController : MonoBehaviour
 {
     public Rigidbody rb;
     public GameObject camHolder;
-    public float speed, sensitivity, maxForce;
+    public float speed, sensitivity, maxForce, jumpForce;
     private Vector2 move, look;
     private float lookRotation;
+    private bool grounded;
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -21,9 +23,31 @@ public class PlayerController : MonoBehaviour
         look = context.ReadValue<Vector2>();
     }
 
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        Jump();
+    }
+
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
     private void FixedUpdate()
     {
         Move();
+    }
+
+    private void Jump()
+    {
+        Vector3 jumpForces = Vector3.zero;
+
+        if (grounded)
+        {
+            jumpForces = Vector3.up * jumpForce;
+        }
+
+        rb.AddForce(jumpForces, ForceMode.VelocityChange);
     }
 
     private void Move()
@@ -47,12 +71,7 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
     }
 
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    void LateUpdate()
+    private void Look()
     {
         // Turn
         transform.Rotate(Vector3.up * look.x * sensitivity);
@@ -61,5 +80,15 @@ public class PlayerController : MonoBehaviour
         lookRotation += (-look.y * sensitivity);
         lookRotation = Mathf.Clamp(lookRotation, -90, 90);
         camHolder.transform.eulerAngles = new Vector3(lookRotation, camHolder.transform.eulerAngles.y, camHolder.transform.eulerAngles.z);
+    }    
+
+    void LateUpdate()
+    {
+        Look();
+    }
+
+    public void SetGrounded(bool state)
+    {
+        grounded = state;
     }
 }
