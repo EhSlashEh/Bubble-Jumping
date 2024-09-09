@@ -1,6 +1,6 @@
 # Bubble Jumping
 
-I'm making a FPS game where the main gimick is you have a bubble gun that you use to propell yourself around.
+I'm making an FPS game where the main gimmick is you have a bubble gun that you use to propel yourself around.
 
 ## Table of Contents
 
@@ -10,7 +10,7 @@ I'm making a FPS game where the main gimick is you have a bubble gun that you us
 
 ## About
 
-Inspired by TF2 Soilder.
+Inspired by TF2 Soldier.
 
 I want to make a cool First-Person perspective game.
 
