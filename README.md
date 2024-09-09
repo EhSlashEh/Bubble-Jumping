@@ -26,7 +26,7 @@ List the key features of the project:
 ## Technologies
 
 This project is built with the following technologies:
-- [Technology 1](https://unity.com/)
-- [Technology 2](https://wiki.teamfortress.com/wiki/Jumping#Basic_rocket_jump)
-- [Technology 3](https://en.wikipedia.org/wiki/Bubble_(physics))
+- [Unity Game Engine](https://unity.com/)
+- [Advanced jump movement](https://wiki.teamfortress.com/wiki/Jumping#Basic_rocket_jump)
+- [Bubble](https://en.wikipedia.org/wiki/Bubble_(physics))
 
