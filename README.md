@@ -18,7 +18,7 @@ Target users are people interested in seeing my coding skills.
 
 ## Features
 
-List the key features of the project:
+Key features of the project:
 - First-Person
 - Platformer
 - Go fast
