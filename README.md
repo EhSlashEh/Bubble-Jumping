@@ -7,11 +7,6 @@ I'm making a FPS game where the main gimick is you have a bubble gun that you us
 - [About](#about)
 - [Features](#features)
 - [Technologies](#technologies)
-- [Setup](#setup)
-- [Usage](#usage)
-- [Tests](#tests)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## About
 
@@ -35,9 +30,3 @@ This project is built with the following technologies:
 - [Technology 2](https://wiki.teamfortress.com/wiki/Jumping#Basic_rocket_jump)
 - [Technology 3](https://en.wikipedia.org/wiki/Bubble_(physics))
 
-
-# Install dependencies
-npm install
-
-# Start the server
-npm start
