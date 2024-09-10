@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private float lookRotation;
     private bool grounded;
 
+    // Input calls
     public void OnMove(InputAction.CallbackContext context)
     {
         move = context.ReadValue<Vector2>();
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour
         Jump();
     }
 
+    // Timings
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -37,19 +39,13 @@ public class PlayerController : MonoBehaviour
     {
         Move();
     }
-
-    private void Jump()
+    
+    void LateUpdate()
     {
-        Vector3 jumpForces = Vector3.zero;
-
-        if (grounded)
-        {
-            jumpForces = Vector3.up * jumpForce;
-        }
-
-        rb.AddForce(jumpForces, ForceMode.VelocityChange);
+        Look();
     }
 
+    // Actions
     private void Move()
     {
         // Find target velocity
@@ -73,20 +69,44 @@ public class PlayerController : MonoBehaviour
 
     private void Look()
     {
-        // Turn
+        // Turn (horizontal)
         transform.Rotate(Vector3.up * look.x * sensitivity);
 
-        // Look
+        // Look (Vertical)
         lookRotation += (-look.y * sensitivity);
         lookRotation = Mathf.Clamp(lookRotation, -90, 90);
-        camHolder.transform.eulerAngles = new Vector3(lookRotation, camHolder.transform.eulerAngles.y, camHolder.transform.eulerAngles.z);
-    }    
 
-    void LateUpdate()
-    {
-        Look();
+        // Apply rotation
+        // OLD: camHolder.transform.eulerAngles = new Vector3(lookRotation, camHolder.transform.eulerAngles.y, camHolder.transform.eulerAngles.z);
+        camHolder.transform.eulerAngles = new Vector3(lookRotation, camHolder.transform.eulerAngles.y, camHolder.transform.eulerAngles.z);
+        camHolder.transform.localRotation = Quaternion.Euler(lookRotation, 0f, 0f);
     }
 
+    private void Jump()
+    {
+        Vector3 jumpForces = Vector3.zero;
+
+        if (grounded)
+        {
+            jumpForces = Vector3.up * jumpForce;
+        }
+
+        rb.AddForce(jumpForces, ForceMode.VelocityChange);
+    }
+
+    public void BubbleJump(Vector3 bubbleOrigin)
+    {
+        Vector3 bubbleJumpForces = Vector3.zero;
+
+        if (grounded)
+        {
+            bubbleJumpForces = Vector3.up * jumpForce;
+        }
+
+        rb.AddForce(bubbleJumpForces, ForceMode.VelocityChange);
+    }
+
+    // States
     public void SetGrounded(bool state)
     {
         grounded = state;

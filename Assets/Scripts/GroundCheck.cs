@@ -27,6 +27,7 @@ public class GroundCheck : MonoBehaviour
         controller.SetGrounded(false);
     }
 
+    
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject == controller.gameObject)
@@ -37,4 +38,5 @@ public class GroundCheck : MonoBehaviour
         controller.SetGrounded(true);
 
     }
+    
 }
