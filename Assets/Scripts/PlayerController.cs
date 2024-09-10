@@ -6,9 +6,16 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Game Objects")]
     public Rigidbody rb;
     public GameObject camHolder;
-    public float speed, sensitivity, maxForce, jumpForce;
+
+    [Header("Floats")]
+    public float speed;
+    public float sensitivity;
+    public float maxForce;
+    public float jumpForce;
+
     private Vector2 move, look;
     private float lookRotation;
     private bool grounded;
@@ -98,9 +105,9 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 bubbleJumpForces = Vector3.zero;
 
-        if (grounded)
+        if (true)
         {
-            bubbleJumpForces = Vector3.up * jumpForce;
+            bubbleJumpForces = Vector3.up * jumpForce * 5;
         }
 
         rb.AddForce(bubbleJumpForces, ForceMode.VelocityChange);
