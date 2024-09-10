@@ -103,13 +103,20 @@ public class PlayerController : MonoBehaviour
 
     public void BubbleJump(Vector3 bubbleOrigin)
     {
-        Vector3 bubbleJumpForces = Vector3.zero;
+        // Calculate the direction and distance from the gameObject to the bubbleOrigin
+        Vector3 direction = (transform.position - bubbleOrigin).normalized;
+        float distance = Vector3.Distance(transform.position, bubbleOrigin);
 
-        if (true)
-        {
-            bubbleJumpForces = Vector3.up * jumpForce * 5;
-        }
+        // Calculate the strength of the force based on the distance
+        float forceMultiplier = Mathf.Clamp(1 / distance, 0, 50);
 
+        // Apply force based on direction and distance
+        Vector3 bubbleJumpForces = direction * forceMultiplier * 10;
+
+        // Additional upwards force
+        bubbleJumpForces += Vector3.up * 3; 
+
+        // Apply force to player
         rb.AddForce(bubbleJumpForces, ForceMode.VelocityChange);
     }
 
