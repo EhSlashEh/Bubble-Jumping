@@ -6,6 +6,7 @@
 # I added these ignores
 /Library/
 /Assets/PolyGun/
+/Assets/Prefabs/PolyGun/
 
 # User-specific files
 *.rsuser
