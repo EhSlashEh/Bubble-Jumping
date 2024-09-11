@@ -8,11 +8,16 @@ public class PlayerController : MonoBehaviour
     public Rigidbody rb;
     public GameObject camHolder;
     public TextMeshProUGUI promtText;
+    public GameObject bubbleBullet;
 
     [Header("Player Movement Forces")]
     public float speed = 10f;
     public float sensitivity = 0.1f;
     public float jumpForce = 3f;
+    public float airControl = 0.15f;
+
+    [Header("Firing")]
+    public float bubbleBulletSpeed = 30f;
 
     [Header("Bubble Power")]
     public float bubbleForce = 100f;
@@ -24,7 +29,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 move, look;
     private float lookRotation;
-    private bool grounded;
+    private bool isGrounded;
 
     // Input calls
     public void OnMove(InputAction.CallbackContext context)
@@ -39,12 +44,23 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        Jump();
+        if (context.performed)
+        {
+            Jump();
+        }
+    }
+
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Fire();
+        }
     }
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.performed) // Ensure it's only triggered once per press
+        if (context.performed)
         {
             Interact();
         }
@@ -74,22 +90,25 @@ public class PlayerController : MonoBehaviour
     // Actions
     private void Move()
     {
-        // Find target velocity
-        Vector3 currentVelocity = rb.velocity;
+        // Find target velocity based on player input
         Vector3 targetVelocity = new Vector3(move.x, 0, move.y);
-        targetVelocity *= speed;
+        targetVelocity = transform.TransformDirection(targetVelocity) * speed;
 
-        // Align direction
-        targetVelocity = transform.TransformDirection(targetVelocity);
+        // Calculate the current velocity without vertical component
+        Vector3 currentHorizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
-        // Calculate forces
-        Vector3 velocityChange = (targetVelocity - currentVelocity);
-        velocityChange = new Vector3(velocityChange.x, 0, velocityChange.z);
+        // When airborne, blend the target velocity with the current velocity to retain momentum        
+        if (!isGrounded)
+        {
+            // Blend the current velocity with the new target velocity to maintain momentum
+            targetVelocity = Vector3.Lerp(currentHorizontalVelocity, targetVelocity, airControl);
+        }
+        
 
+        // Calculate velocity change
+        Vector3 velocityChange = (targetVelocity - currentHorizontalVelocity);
 
-        // Limit force
-        Vector3.ClampMagnitude(velocityChange, speed);
-
+        // Apply the velocity change
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
     }
 
@@ -111,12 +130,26 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 jumpForces = Vector3.zero;
 
-        if (grounded)
+        if (isGrounded)
         {
             jumpForces = Vector3.up * jumpForce;
         }
 
         rb.AddForce(jumpForces, ForceMode.VelocityChange);
+
+        isGrounded = false;
+    }
+
+    private void Fire()
+    {
+        // Instantiate a new bubble bullet at the camera's position and orientation
+        GameObject newBubble = Instantiate(bubbleBullet, camHolder.transform.position, camHolder.transform.rotation);
+
+        // Get the Rigidbody component of the bubble bullet to apply force to it
+        Rigidbody bubbleRb = newBubble.GetComponent<Rigidbody>();
+
+        // Set the velocity of the bubble bullet to move forward relative to the camera's direction
+        bubbleRb.velocity = camHolder.transform.forward * bubbleBulletSpeed;
     }
 
     private void Interact()
@@ -150,10 +183,15 @@ public class PlayerController : MonoBehaviour
         float distance = Vector3.Distance(transform.position, bubbleOrigin);
 
         // Calculate the strength of the force based on the distance
-        float forceMultiplier = Mathf.Clamp(1 / distance, 0, maxForce);
+        float distancePower = Mathf.Clamp(1 / distance, 0, maxForce);
 
         // Apply force based on direction and distance
-        Vector3 bubbleJumpForces = direction * forceMultiplier * bubbleForce;
+        Vector3 bubbleJumpForces = direction * distancePower * bubbleForce;
+
+        // Log the values
+        Debug.Log("Distance: " + distance);
+        Debug.Log("Distance Power: " + distancePower);
+        Debug.Log("Bubble Jump Forces: " + bubbleJumpForces);
 
         // Apply force to player
         rb.AddForce(bubbleJumpForces, ForceMode.VelocityChange);
@@ -162,7 +200,7 @@ public class PlayerController : MonoBehaviour
     // States
     public void SetGrounded(bool state)
     {
-        grounded = state;
+        isGrounded = state;
     }
 
     private RaycastHit CheckForInteraction()

@@ -1,42 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GroundCheck : MonoBehaviour
 {
-
     public PlayerController controller;
+    public GameObject bullet;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider col)
     {
-        if (other.gameObject == controller.gameObject)
+        if (col.gameObject == controller.gameObject)
         {
             return;
         }
-
-        controller.SetGrounded(true);        
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject == controller.gameObject)
-        {
-            return;
-        }
-
-        controller.SetGrounded(false);
-    }
-
-    
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject == controller.gameObject)
+        if (col.gameObject == bullet)
         {
             return;
         }
 
         controller.SetGrounded(true);
-
     }
     
 }

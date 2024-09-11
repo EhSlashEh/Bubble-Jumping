@@ -1,17 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class bubbleScript : MonoBehaviour
 {
-    public GameObject player;
+    private GameObject player;
 
-    private void OnTriggerEnter(Collider other)
+    private void Start()
     {
-        PlayerController playerController = player.GetComponent<PlayerController>();
+        // Automatically find the Player game object by tag
+        player = GameObject.FindWithTag("Player");
+    }
 
-        playerController.BubbleJump(transform.position);
+    private void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject == player)
+        {
+            return;
+        }
 
-        Destroy(gameObject);
+        if (player != null)
+        {
+            PlayerController playerController = player.GetComponent<PlayerController>();
+
+            if (playerController != null)
+            {
+                playerController.BubbleJump(transform.position);
+                Destroy(gameObject);
+            }
+            else
+            {
+                Debug.LogError("PlayerController component not found on Player object.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Player object not found. Make sure the Player has the correct tag.");
+        }
     }
 }
