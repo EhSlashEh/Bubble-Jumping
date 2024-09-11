@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Firing")]
     public float bubbleBulletSpeed = 30f;
+    public float fireCooldown = 1f;
+    private float lastFireTime = 0f;
 
     [Header("Bubble Power")]
     public float bubbleForce = 100f;
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour
     public float raycastDistance = 10f;
     public LayerMask interactableLayer;
 
+    // Other vars
     private Vector2 move, look;
     private float lookRotation;
     private bool isGrounded;
@@ -144,6 +147,14 @@ public class PlayerController : MonoBehaviour
 
     private void Fire()
     {
+        if (Time.time - lastFireTime < fireCooldown)
+        {
+            Debug.Log("Firing is on cooldown.");
+            return; // If not enough time has passed, don't fire
+        }
+
+        lastFireTime = Time.time; // Update the last fire time
+
         // Instantiate a new bubble bullet at the camera's position and orientation
         GameObject newBubble = Instantiate(bubbleBullet, camHolder.transform.position, camHolder.transform.rotation);
 
