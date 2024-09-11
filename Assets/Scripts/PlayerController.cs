@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
@@ -12,11 +9,14 @@ public class PlayerController : MonoBehaviour
     public GameObject camHolder;
     public TextMeshProUGUI promtText;
 
-    [Header("Movement Forces")]
-    public float speed;
-    public float sensitivity;
-    public float maxForce;
-    public float jumpForce;
+    [Header("Player Movement Forces")]
+    public float speed = 10f;
+    public float sensitivity = 0.1f;
+    public float jumpForce = 3f;
+
+    [Header("Bubble Power")]
+    public float bubbleForce = 100f;
+    public float maxForce = 20f;
 
     [Header("Interactions")]
     public float raycastDistance = 10f;
@@ -143,7 +143,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     public void BubbleJump(Vector3 bubbleOrigin)
     {
         // Calculate the direction and distance from the gameObject to the bubbleOrigin
@@ -151,13 +150,10 @@ public class PlayerController : MonoBehaviour
         float distance = Vector3.Distance(transform.position, bubbleOrigin);
 
         // Calculate the strength of the force based on the distance
-        float forceMultiplier = Mathf.Clamp(1 / distance, 0, 50);
+        float forceMultiplier = Mathf.Clamp(1 / distance, 0, maxForce);
 
         // Apply force based on direction and distance
-        Vector3 bubbleJumpForces = direction * forceMultiplier * 10;
-
-        // Additional upwards force
-        bubbleJumpForces += Vector3.up * 3; 
+        Vector3 bubbleJumpForces = direction * forceMultiplier * bubbleForce;
 
         // Apply force to player
         rb.AddForce(bubbleJumpForces, ForceMode.VelocityChange);
