@@ -3,18 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("Game Objects")]
     public Rigidbody rb;
     public GameObject camHolder;
+    public TextMeshProUGUI promtText;
 
-    [Header("Floats")]
+    [Header("Movement Forces")]
     public float speed;
     public float sensitivity;
     public float maxForce;
     public float jumpForce;
+
+    [Header("Interactions")]
+    public float raycastDistance = 10f;
+    public LayerMask interactableLayer;
 
     private Vector2 move, look;
     private float lookRotation;
@@ -36,13 +42,26 @@ public class PlayerController : MonoBehaviour
         Jump();
     }
 
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.performed) // Ensure it's only triggered once per press
+        {
+            Interact();
+        }
+    }
+
     // Timings
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void FixedUpdate()
+    void Update()
+    {
+        CheckForInteraction();
+    }
+
+    void FixedUpdate()
     {
         Move();
     }
@@ -84,7 +103,6 @@ public class PlayerController : MonoBehaviour
         lookRotation = Mathf.Clamp(lookRotation, -90, 90);
 
         // Apply rotation
-        // OLD: camHolder.transform.eulerAngles = new Vector3(lookRotation, camHolder.transform.eulerAngles.y, camHolder.transform.eulerAngles.z);
         camHolder.transform.eulerAngles = new Vector3(lookRotation, camHolder.transform.eulerAngles.y, camHolder.transform.eulerAngles.z);
         camHolder.transform.localRotation = Quaternion.Euler(lookRotation, 0f, 0f);
     }
@@ -100,6 +118,31 @@ public class PlayerController : MonoBehaviour
 
         rb.AddForce(jumpForces, ForceMode.VelocityChange);
     }
+
+    private void Interact()
+    {
+        RaycastHit hit = CheckForInteraction();
+
+        if (hit.collider != null)
+        {
+            // Get the Interactable component from the hit collider
+            Interactable interactable = hit.collider.GetComponent<Interactable>();
+
+            if (interactable != null)
+            {
+                // Log the interaction
+                Debug.Log("Interacting with: " + hit.collider.name);
+
+                // Perform interaction logic
+                interactable.BaseInteract();
+            }
+            else
+            {
+                Debug.LogWarning("No Interactable component found on: " + hit.collider.name);
+            }
+        }
+    }
+
 
     public void BubbleJump(Vector3 bubbleOrigin)
     {
@@ -125,4 +168,35 @@ public class PlayerController : MonoBehaviour
     {
         grounded = state;
     }
+
+    private RaycastHit CheckForInteraction()
+    {
+        // Perform the raycast from the center of the camera
+        Ray ray = new Ray(camHolder.transform.position, camHolder.transform.forward);
+        RaycastHit hit;
+
+        // Check if the raycast hits something
+        if (Physics.Raycast(ray, out hit, raycastDistance, interactableLayer))
+        {
+            // Try to get the Interactable component from the hit object
+            Interactable interactable = hit.collider.GetComponent<Interactable>();
+
+            if (interactable != null)
+            {
+                promtText.text = interactable.promtMessage; // Use the promptMessage from the Interactable component
+            }
+            else
+            {
+                promtText.text = "Looking at: " + hit.collider.name; // Fallback if no Interactable component is found
+            }
+        }
+        else
+        {
+            promtText.text = "";
+            hit = default; // Reset hit if nothing was found
+        }
+
+        return hit;
+    }
+
 }
