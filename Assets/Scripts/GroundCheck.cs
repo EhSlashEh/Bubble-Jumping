@@ -16,7 +16,7 @@ public class GroundCheck : MonoBehaviour
             return;
         }
 
-        controller.SetGrounded(true);
+        // controller.SetGrounded(true);
     }
     
 }

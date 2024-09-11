@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,7 +22,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Bubble Power")]
     public float bubbleForce = 100f;
-    public float maxForce = 20f;
+    public float minForce = 0.2f;
+    public float maxForce = 0.8f;
 
     [Header("Interactions")]
     public float raycastDistance = 10f;
@@ -30,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 move, look;
     private float lookRotation;
     private bool isGrounded;
+    private bool isBubbleJumping;
 
     // Input calls
     public void OnMove(InputAction.CallbackContext context)
@@ -75,6 +78,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         CheckForInteraction();
+        CheckGrounded();
     }
 
     void FixedUpdate()
@@ -128,16 +132,14 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        Vector3 jumpForces = Vector3.zero;
-
-        if (isGrounded)
+        if (!isGrounded)
         {
-            jumpForces = Vector3.up * jumpForce;
+            return;
         }
 
-        rb.AddForce(jumpForces, ForceMode.VelocityChange);
+        Vector3 jumpForces = Vector3.up * jumpForce;
 
-        isGrounded = false;
+        rb.AddForce(jumpForces, ForceMode.VelocityChange);
     }
 
     private void Fire()
@@ -182,27 +184,71 @@ public class PlayerController : MonoBehaviour
         Vector3 direction = (transform.position - bubbleOrigin).normalized;
         float distance = Vector3.Distance(transform.position, bubbleOrigin);
 
+        if (distance > 8)
+        {
+            return;
+        }
+
         // Calculate the strength of the force based on the distance
-        float distancePower = Mathf.Clamp(1 / distance, 0, maxForce);
+        float distancePower = Mathf.Clamp(1 / distance, minForce, maxForce);
 
         // Apply force based on direction and distance
         Vector3 bubbleJumpForces = direction * distancePower * bubbleForce;
 
         // Log the values
-        Debug.Log("Distance: " + distance);
-        Debug.Log("Distance Power: " + distancePower);
-        Debug.Log("Bubble Jump Forces: " + bubbleJumpForces);
+        Debug.Log("Direction: " + direction + " | Distance: " + distance + " | Distance Power: " + distancePower + " | Bubble Jump Forces: " + bubbleJumpForces);
+
+        // Set isGrounded to false for 0.3 seconds
+        if (!isBubbleJumping)
+        {
+            StartCoroutine(HandleBubbleJump());
+        }
 
         // Apply force to player
         rb.AddForce(bubbleJumpForces, ForceMode.VelocityChange);
     }
 
-    // States
-    public void SetGrounded(bool state)
+    private IEnumerator HandleBubbleJump()
     {
-        isGrounded = state;
+        isBubbleJumping = true;
+        isGrounded = false;
+
+        yield return new WaitForSeconds(0.3f);
+
+        isBubbleJumping = false;
     }
 
+    // Ground
+    private void CheckGrounded()
+    {
+        float groundCheckRadius = 0.3f;
+        Vector3 origin = transform.position + Vector3.down * (groundCheckRadius + 0.5f);
+
+        // Get all colliders within the sphere
+        Collider[] colliders = Physics.OverlapSphere(origin, groundCheckRadius);
+
+        // Check if any of the colliders are not tagged as "Player"
+        if (!isBubbleJumping)
+        {
+            isGrounded = false;
+            foreach (Collider collider in colliders)
+            {
+                if (collider.CompareTag("Player"))
+                {
+                    continue;
+                }
+
+                // If we find a collider that is not tagged as "Player", the player is grounded
+                isGrounded = true;
+                break;
+            }
+        }
+
+        // Draw a debug sphere to visualize the ground check
+        Debug.DrawRay(origin, Vector3.down * groundCheckRadius, Color.red);
+    }
+
+    // Look Interactions
     private RaycastHit CheckForInteraction()
     {
         // Perform the raycast from the center of the camera
