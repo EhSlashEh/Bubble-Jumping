@@ -149,7 +149,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Time.time - lastFireTime < fireCooldown)
         {
-            Debug.Log("Firing is on cooldown.");
+            // Debug.Log("Firing is on cooldown.");
             return; // If not enough time has passed, don't fire
         }
 
@@ -207,7 +207,7 @@ public class PlayerController : MonoBehaviour
         Vector3 bubbleJumpForces = direction * distancePower * bubbleForce;
 
         // Log the values
-        Debug.Log("Direction: " + direction + " | Distance: " + distance + " | Distance Power: " + distancePower + " | Bubble Jump Forces: " + bubbleJumpForces);
+        // Debug.Log("Direction: " + direction + " | Distance: " + distance + " | Distance Power: " + distancePower + " | Bubble Jump Forces: " + bubbleJumpForces);
 
         // Set isGrounded to false for 0.3 seconds
         if (!isBubbleJumping)

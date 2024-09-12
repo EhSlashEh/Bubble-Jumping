@@ -8,6 +8,9 @@ public class bubbleScript : MonoBehaviour
     private Rigidbody rb;
     private bool popping = false;
 
+    [SerializeField] private AudioClip bubblePop;
+    [SerializeField] private AudioSource audioSource;
+
     private void Start()
     {
         // Automatically find the Player game object by tag
@@ -19,10 +22,8 @@ public class bubbleScript : MonoBehaviour
         // Get the Rigidbody component
         rb = GetComponent<Rigidbody>();
 
-        if (rb == null)
-        {
-            Debug.LogError("Rigidbody component is missing from the bubble object.");
-        }
+        audioSource = GetComponent<AudioSource>();
+
     }
 
     private void OnTriggerEnter(Collider col)
@@ -50,6 +51,9 @@ public class bubbleScript : MonoBehaviour
                 }
 
                 playerController.BubbleJump(transform.position);
+
+                // Play audio file
+                audioSource.PlayOneShot(bubblePop);
 
                 // Start the destruction sequence with scaling and transparency animation
                 StartCoroutine(GrowAndFadeOut());
