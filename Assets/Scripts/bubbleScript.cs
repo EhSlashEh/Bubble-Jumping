@@ -7,11 +7,11 @@ public class bubbleScript : MonoBehaviour
     private Renderer bubbleRenderer;
     private Rigidbody rb;
     private bool popping = false;
+    private AudioSource audioSource;
 
-    [SerializeField] private AudioClip bubblePop;
-    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private GameObject hardBubble;
 
-    private void Start()
+    private void Start() 
     {
         // Automatically find the Player game object by tag
         player = GameObject.FindWithTag("Player");
@@ -33,6 +33,13 @@ public class bubbleScript : MonoBehaviour
             return;
         }
 
+        // 7 is a soap wall
+        if (col.gameObject.layer == 7)
+        {
+            // Make hard bubble
+            Instantiate(hardBubble, transform.position, transform.rotation);
+        }
+
         if (player != null)
         {
             PlayerController playerController = player.GetComponent<PlayerController>();
@@ -41,7 +48,8 @@ public class bubbleScript : MonoBehaviour
             {
                 // Do stuff
                 popping = true;
-                Debug.Log("Pop");
+
+                // Debug.Log("Pop");
 
                 // Set velocity to zero
                 if (rb != null)
@@ -53,7 +61,7 @@ public class bubbleScript : MonoBehaviour
                 playerController.BubbleJump(transform.position);
 
                 // Play audio file
-                audioSource.PlayOneShot(bubblePop);
+                audioSource.PlayOneShot(audioSource.clip);
 
                 // Start the destruction sequence with scaling and transparency animation
                 StartCoroutine(GrowAndFadeOut());

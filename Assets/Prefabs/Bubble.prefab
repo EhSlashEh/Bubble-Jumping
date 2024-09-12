@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 1118816331051919720}
   - component: {fileID: 1118816331051919721}
   - component: {fileID: 1118816331051919722}
-  - component: {fileID: 1118816331051919726}
   - component: {fileID: -1544854153715387738}
+  - component: {fileID: 1118816331051919726}
   - component: {fileID: -6077836763957231144}
   m_Layer: 0
   m_Name: Bubble
@@ -98,20 +98,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1118816331051919726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1118816331051919723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12f8fe79bf34e744c928870b3cca5b54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bubblePop: {fileID: 8300000, guid: 52117a721eb379c49be30cf2b36d0ed6, type: 3}
-  audioSource: {fileID: 0}
 --- !u!54 &-1544854153715387738
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -128,6 +114,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 3
+--- !u!114 &1118816331051919726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118816331051919723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12f8fe79bf34e744c928870b3cca5b54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hardBubble: {fileID: 6123238180950327937, guid: 36c1f909a7b6b894f857c8a04e9266ed, type: 3}
 --- !u!82 &-6077836763957231144
 AudioSource:
   m_ObjectHideFlags: 0
@@ -139,7 +138,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 52117a721eb379c49be30cf2b36d0ed6, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

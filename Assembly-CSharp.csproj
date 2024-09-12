@@ -62,6 +62,7 @@
     <Compile Include="Assets\Scripts\Interactables\JumpPad.cs" />
     <Compile Include="Assets\Scripts\Interactables\Keypad.cs" />
     <Compile Include="Assets\Scripts\Interactable.cs" />
+    <Compile Include="Assets\Scripts\HardBubbleScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
