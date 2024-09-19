@@ -61,10 +61,11 @@
     <Compile Include="Assets\Scripts\GroundCheck.cs" />
     <Compile Include="Assets\Scripts\Interactables\JumpPad.cs" />
     <Compile Include="Assets\Scripts\HardBubbleScript.cs" />
+    <Compile Include="Assets\Scripts\ResetPlayer.cs" />
     <Compile Include="Assets\Scripts\Interactables\Keypad.cs" />
     <Compile Include="Assets\Scripts\Interactable.cs" />
-    <Compile Include="Assets\Scripts\ResetPlayer.cs" />
-    <Compile Include="Assets\ObjectRotator.cs" />
+    <Compile Include="Assets\Scripts\ObjectRotator.cs" />
+    <Compile Include="Assets\Scripts\ScenesManagementScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
